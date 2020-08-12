@@ -1,0 +1,69 @@
+Install Spark and its dependencies ,Jupyter notebook on our instances
+#Update 
+sudo apt-get update
+#Install pip3
+sudo apt install python3-pip
+#Install jupyter
+pip3 install jupyter
+
+#Install Spark
+TO install spark we need java runtime environment,and scala
+#To install java
+sudo apt-get install default-jre
+#To install scala
+sudo apt-get install scala
+
+#To connect python and java,Install Py4J
+pip3 install py4j
+
+To Install spark on hadoop
+#Download tgz file
+wget http://archive.apache.org/dist/spark/spark-3.0.0/spark-3.0.0-bin-hadoop2.7.tgz
+
+or
+
+wget https://downloads.apache.org/spark/spark-3.0.0/spark-3.0.0-bin-hadoop2.7.tgz
+
+Extract the tgz file
+sudo tar -zxvf spark-3.0.0-bin-hadoop2.7.tgz
+
+#Check the pwd of the spark installed
+/home/ubuntu/spark-3.0.0-bin-hadoop2.7
+
+#Install findspark to connect spark and python
+pip3 install findspark
+
+#Now to configure jupyter notebook[Note if we have an error showing jupyter
+not found use "sudo -H pip3 install jupyter"
+
+jupyter notebook --genrate-config
+#Create a directory certs and 
+cd
+mkdir certs [Note to give the permissions of this folder :sudo chown $USER:$USER ~/certs/mycert.pem]
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
+Press enter and leave it blanks
+
+#Now to find the configure file and edit the configuration
+cd ~/.jupyter/
+vi jupyter_notebook_config.py
+
+In the config file insert the variables and exit 
+
+c = get_config()
+c.NotebookApp.certfile = u'/home/ubuntu/certs/mycert.pem'
+c.NotebookApp.ip = '*'
+c.NotebookApp.open_browser = False
+c.NotebookApp.port = 8888
+
+#Now in the command prompt enter
+jupyter notebook
+
+copy the url and replace localhost with our ec2 instance dns
+
+https://ec2-15-237-27-219.eu-west-3.compute.amazonaws.com:8888/?token=c1995c5e8c14e556fa264ca9e2783cd3f110259a2749698f
+
+
+# Now to import pyspark into our jupyter
+import findspark
+findspark.init('/home/ubuntu/spark-3.0.0-bin-hadoop2.7')
+import pyspark
